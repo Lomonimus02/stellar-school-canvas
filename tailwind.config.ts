@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -124,6 +125,14 @@ export default {
             "background-size": "200% 200%",
             "background-position": "right center"
           }
+        },
+        "shine": {
+          "0%": {
+            "background-position": "200% 0"
+          },
+          "100%": {
+            "background-position": "-200% 0"
+          }
         }
       },
       animation: {
@@ -137,6 +146,13 @@ export default {
         'pulse-soft': 'pulse-soft 3s infinite',
         'float': 'float 3s ease-in-out infinite',
         "gradient-xy": "gradient-xy 15s ease infinite",
+        "shine": "shine 8s linear infinite"
+      },
+      dropShadow: {
+        'glow': '0 0 5px rgba(255, 255, 255, 0.7)',
+        'glow-lg': '0 0 10px rgba(255, 255, 255, 0.9)',
+        'glow-pink': '0 0 8px rgba(236, 72, 153, 0.7)',
+        'glow-purple': '0 0 8px rgba(147, 51, 234, 0.7)',
       }
     }
   },
