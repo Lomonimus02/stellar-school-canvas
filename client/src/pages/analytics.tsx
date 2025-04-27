@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/hooks/use-auth";
@@ -54,19 +55,19 @@ export default function AnalyticsPage() {
   // Fetch grades
   const { data: grades = [], isLoading: gradesLoading } = useQuery<Grade[]>({
     queryKey: ["/api/grades"],
-    enabled: !!user && hasAccess
+    enabled: !!user && !!hasAccess // Fix: Use boolean instead of boolean | null
   });
   
   // Fetch attendance
   const { data: attendance = [], isLoading: attendanceLoading } = useQuery<Attendance[]>({
     queryKey: ["/api/attendance"],
-    enabled: !!user && hasAccess
+    enabled: !!user && !!hasAccess // Fix: Use boolean instead of boolean | null
   });
   
   // Fetch classes
   const { data: classes = [], isLoading: classesLoading } = useQuery<Class[]>({
     queryKey: ["/api/classes"],
-    enabled: !!user && hasAccess
+    enabled: !!user && !!hasAccess // Fix: Use boolean instead of boolean | null
   });
   
   // No access message for unauthorized users
@@ -89,36 +90,36 @@ export default function AnalyticsPage() {
   // Filter data by class if a class is selected
   const filteredGrades = selectedClassId === "all" 
     ? grades 
-    : grades.filter(g => g.classId === parseInt(selectedClassId));
+    : grades.filter((g: Grade) => g.classId === parseInt(selectedClassId));
   
   const filteredAttendance = selectedClassId === "all" 
     ? attendance 
-    : attendance.filter(a => a.classId === parseInt(selectedClassId));
+    : attendance.filter((a: Attendance) => a.classId === parseInt(selectedClassId));
   
   // Calculate grade statistics
   const gradeDistribution = [
-    { name: "Отлично (5)", value: filteredGrades.filter(g => g.grade === 5).length },
-    { name: "Хорошо (4)", value: filteredGrades.filter(g => g.grade === 4).length },
-    { name: "Удовл. (3)", value: filteredGrades.filter(g => g.grade === 3).length },
-    { name: "Неудовл. (2)", value: filteredGrades.filter(g => g.grade === 2).length },
-    { name: "Плохо (1)", value: filteredGrades.filter(g => g.grade === 1).length },
+    { name: "Отлично (5)", value: filteredGrades.filter((g: Grade) => g.grade === 5).length },
+    { name: "Хорошо (4)", value: filteredGrades.filter((g: Grade) => g.grade === 4).length },
+    { name: "Удовл. (3)", value: filteredGrades.filter((g: Grade) => g.grade === 3).length },
+    { name: "Неудовл. (2)", value: filteredGrades.filter((g: Grade) => g.grade === 2).length },
+    { name: "Плохо (1)", value: filteredGrades.filter((g: Grade) => g.grade === 1).length },
   ];
   
   // Calculate attendance statistics
   const attendanceDistribution = [
-    { name: "Присутствовал", value: filteredAttendance.filter(a => a.status === "present").length },
-    { name: "Отсутствовал", value: filteredAttendance.filter(a => a.status === "absent").length },
-    { name: "Опоздал", value: filteredAttendance.filter(a => a.status === "late").length },
+    { name: "Присутствовал", value: filteredAttendance.filter((a: Attendance) => a.status === "present").length },
+    { name: "Отсутствовал", value: filteredAttendance.filter((a: Attendance) => a.status === "absent").length },
+    { name: "Опоздал", value: filteredAttendance.filter((a: Attendance) => a.status === "late").length },
   ];
   
   // Calculate average grade
   const averageGrade = filteredGrades.length > 0 
-    ? (filteredGrades.reduce((acc, g) => acc + g.grade, 0) / filteredGrades.length).toFixed(2)
+    ? (filteredGrades.reduce((acc: number, g: Grade) => acc + g.grade, 0) / filteredGrades.length).toFixed(2)
     : "0.00";
   
   // Calculate attendance rate
   const attendanceRate = filteredAttendance.length > 0
-    ? ((filteredAttendance.filter(a => a.status === "present").length / filteredAttendance.length) * 100).toFixed(2)
+    ? ((filteredAttendance.filter((a: Attendance) => a.status === "present").length / filteredAttendance.length) * 100).toFixed(2)
     : "0.00";
   
   // Prepare data for grade trend chart (mock data since we don't have real time-based data)
@@ -166,7 +167,7 @@ export default function AnalyticsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Все классы</SelectItem>
-              {classes.map((cls) => (
+              {classes.map((cls: Class) => (
                 <SelectItem key={cls.id} value={cls.id.toString()}>
                   {cls.name}
                 </SelectItem>

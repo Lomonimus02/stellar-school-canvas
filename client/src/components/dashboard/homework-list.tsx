@@ -12,7 +12,7 @@ const HomeworkList: React.FC = () => {
       case 'overdue':
         return 'destructive';
       case 'pending':
-        return 'outline'; // Changed from 'warning' to 'outline' which is a valid variant
+        return 'outline'; // Valid variant for Badge
       default:
         return 'secondary';
     }

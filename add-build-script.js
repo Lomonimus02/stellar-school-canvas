@@ -2,28 +2,18 @@
 const fs = require('fs');
 const path = require('path');
 
+// Read the package.json file
 const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
-fs.readFile(packageJsonPath, 'utf8', (err, data) => {
-  if (err) {
-    console.error('Error reading package.json:', err);
-    return;
-  }
+// Add the build:dev script if it doesn't exist
+if (!packageJson.scripts['build:dev']) {
+  packageJson.scripts['build:dev'] = 'vite build --mode development';
+  console.log('Added build:dev script to package.json');
+} else {
+  console.log('build:dev script already exists in package.json');
+}
 
-  const packageJson = JSON.parse(data);
-
-  if (!packageJson.scripts['build:dev']) {
-    packageJson.scripts['build:dev'] = 'vite build --mode development';
-    console.log('Added build:dev script');
-  } else {
-    console.log('build:dev script already exists');
-  }
-
-  fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2), 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing package.json:', err);
-      return;
-    }
-    console.log('package.json successfully updated');
-  });
-});
+// Write the updated package.json back to disk
+fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+console.log('package.json updated successfully');
