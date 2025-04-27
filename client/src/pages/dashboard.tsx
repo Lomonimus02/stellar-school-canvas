@@ -5,51 +5,39 @@ import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { SchoolList } from "@/components/dashboard/school-list";
 import { TeacherSchedule } from "@/components/dashboard/teacher-schedule";
 import { StudentSchedule } from "@/components/dashboard/student-schedule";
-import { HomeworkList } from "@/components/dashboard/homework-list";
-import { AdminClassList } from "@/components/dashboard/admin-class-list";
-import { AdminSubjectList } from "@/components/dashboard/admin-subject-list";
+import HomeworkList from "@/components/dashboard/homework-list";
+import AdminClassList from "@/components/dashboard/admin-class-list";
+import AdminSubjectList from "@/components/dashboard/admin-subject-list";
 import { UserRoleEnum } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoleCheck } from "@/hooks/use-role-check";
-import { 
-  School, 
-  Users, 
-  Bell, 
-  BookOpen, 
-  BarChart3, 
-  GraduationCap
-} from "lucide-react";
+import { School, Users, Bell, BookOpen, BarChart3, GraduationCap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { isSuperAdmin, isSchoolAdmin, isTeacher, isStudent, isParent, currentRole } = useRoleCheck();
   
-  // Get user counts by role for admin dashboard
   const { data: users = [] } = useQuery<any[]>({
     queryKey: ["/api/users"],
     enabled: !!user && (isSuperAdmin() || isSchoolAdmin())
   });
   
-  // Get number of schools for super admin
   const { data: schools = [] } = useQuery<any[]>({
     queryKey: ["/api/schools"],
     enabled: !!user
   });
   
-  // Get notifications count
   const { data: notifications = [] } = useQuery<any[]>({
     queryKey: ["/api/notifications"],
     enabled: !!user
   });
   
-  // Get homework count
   const { data: homework = [] } = useQuery<any[]>({
     queryKey: ["/api/homework"],
     enabled: !!user && (isTeacher() || isStudent() || isParent())
   });
   
-  // Stats based on user role
   const getRoleStats = () => {
     if (!user) return [];
     
@@ -91,7 +79,6 @@ export default function Dashboard() {
   
   const stats = getRoleStats();
   
-  // Dashboard content based on user role
   const getDashboardContent = () => {
     if (!user) return null;
     
@@ -137,7 +124,6 @@ export default function Dashboard() {
       );
     }
     
-    // Для родителей и других ролей
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-4">
@@ -153,7 +139,6 @@ export default function Dashboard() {
     <MainLayout>
       <h2 className="text-2xl font-heading font-bold text-gray-800 mb-4">Панель управления</h2>
       
-      {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat, index) => (
           <StatCard 
@@ -165,7 +150,6 @@ export default function Dashboard() {
         ))}
       </div>
       
-      {/* Role-specific dashboard content */}
       {getDashboardContent()}
     </MainLayout>
   );

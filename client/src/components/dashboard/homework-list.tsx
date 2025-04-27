@@ -2,9 +2,7 @@
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 
-// This is a placeholder file to fix type errors
 const HomeworkList: React.FC = () => {
-  // Fix the Badge variant type issue by using only valid variants
   const getStatusVariant = (status: string): "default" | "destructive" | "outline" | "secondary" => {
     switch (status) {
       case 'completed':
@@ -12,7 +10,7 @@ const HomeworkList: React.FC = () => {
       case 'overdue':
         return 'destructive';
       case 'pending':
-        return 'outline'; // Valid variant for Badge
+        return 'outline';
       default:
         return 'secondary';
     }
@@ -26,7 +24,7 @@ const HomeworkList: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Homework List</h2>
+      <h2 className="text-xl font-bold">Список домашних заданий</h2>
       <div className="space-y-2">
         {dummyHomeworkItems.map(item => (
           <div key={item.id} className="p-4 border rounded-md">
