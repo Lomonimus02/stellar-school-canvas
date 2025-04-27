@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -327,7 +328,7 @@ export const AttendanceForm: React.FC<AttendanceFormProps> = ({
   };
 
   const isLoading = isLoadingStudents || isLoadingAttendance || 
-    (schedule.subgroupId && (isLoadingSubgroupStudents || isLoadingSubgroupInfo));
+    (!!schedule.subgroupId && (isLoadingSubgroupStudents || isLoadingSubgroupInfo));
   const isSubmitting = updateAttendanceMutation.isPending;
 
   return (
@@ -431,8 +432,8 @@ export const AttendanceForm: React.FC<AttendanceFormProps> = ({
                 <PaginationItem>
                   <PaginationPrevious 
                     onClick={() => goToPage(currentPage - 1)} 
-                    disabled={currentPage === 1 || isSubmitting}
-                    className={currentPage === 1 || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
+                    aria-disabled={currentPage === 1 || isSubmitting}
+                    className={currentPage === 1 || isSubmitting ? "opacity-50 pointer-events-none" : ""}
                   />
                 </PaginationItem>
                 
@@ -441,8 +442,8 @@ export const AttendanceForm: React.FC<AttendanceFormProps> = ({
                     <PaginationLink 
                       isActive={currentPage === page}
                       onClick={() => goToPage(page)}
-                      disabled={isSubmitting}
-                      className={isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
+                      aria-disabled={isSubmitting}
+                      className={isSubmitting ? "opacity-50 pointer-events-none" : ""}
                     >
                       {page}
                     </PaginationLink>
@@ -452,8 +453,8 @@ export const AttendanceForm: React.FC<AttendanceFormProps> = ({
                 <PaginationItem>
                   <PaginationNext 
                     onClick={() => goToPage(currentPage + 1)} 
-                    disabled={currentPage === totalPages || isSubmitting}
-                    className={currentPage === totalPages || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
+                    aria-disabled={currentPage === totalPages || isSubmitting}
+                    className={currentPage === totalPages || isSubmitting ? "opacity-50 pointer-events-none" : ""}
                   />
                 </PaginationItem>
               </PaginationContent>

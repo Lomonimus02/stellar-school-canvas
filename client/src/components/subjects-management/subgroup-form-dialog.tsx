@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,17 +18,19 @@ const subgroupFormSchema = z.object({
   description: z.string().optional().nullable(),
   classId: z.string().min(1, { message: "Выберите класс" }),
   studentIds: z.array(z.string()).optional().default([]),
-  // Добавляем поле для связи с предметом (опционально, но рекомендуется)
-  // Мы не будем сохранять это в БД напрямую, но используем для логики
-  // subjectId: z.string().optional().nullable(),
 });
 
 type SubgroupFormData = z.infer<typeof subgroupFormSchema>;
 
+// Расширяем тип InsertSubgroup для передачи во внешний обработчик
+interface SubgroupFormSubmitData extends Omit<InsertSubgroup, 'schoolId'> {
+  studentIds?: number[];
+}
+
 interface SubgroupFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<InsertSubgroup, 'schoolId'>) => void; // Передаем только нужные поля
+  onSubmit: (data: SubgroupFormSubmitData) => void;
   isLoading: boolean;
   classes: Class[]; // Список классов для выбора
   subjects: Subject[]; // Список предметов для выбора (если нужно)
@@ -73,7 +76,7 @@ export function SubgroupFormDialog({ isOpen, onClose, onSubmit, isLoading, class
       name: values.name,
       description: values.description || null,
       classId: parseInt(values.classId),
-      studentIds: (values.studentIds || []).map((id: string) => parseInt(id)),
+      studentIds: (values.studentIds || []).map((id) => parseInt(id)),
     });
   };
 
@@ -178,24 +181,33 @@ export function SubgroupFormDialog({ isOpen, onClose, onSubmit, isLoading, class
                                 field.onChange((field.value || []).filter((id: string) => id !== student.id.toString()));
                               }
                             }}
+                            className="form-checkbox h-4 w-4 text-primary rounded border-gray-300"
                           />
                           <span>{student.lastName} {student.firstName}</span>
                         </label>
                       ))}
                     </div>
                   )}
-                  <FormDescription>Выберите учеников, которых нужно добавить в подгруппу</FormDescription>
-                  <FormMessage />
+                  <FormDescription>
+                    Выберите учеников, которые будут входить в подгруппу.
+                  </FormDescription>
                 </FormItem>
               )}
             />
+
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
+              <Button type="button" variant="outline" onClick={handleClose}>
                 Отмена
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Создать подгруппу
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Сохранение...
+                  </>
+                ) : (
+                  "Сохранить"
+                )}
               </Button>
             </DialogFooter>
           </form>

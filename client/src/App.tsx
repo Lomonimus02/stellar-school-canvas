@@ -1,3 +1,4 @@
+
 // client/src/App.tsx
 import { Route, Switch } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -40,34 +41,34 @@ function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/" component={Dashboard} />
-      <ProtectedRoute path="/schools" component={Schools} />
-      <ProtectedRoute path="/users" component={Users} />
-      <ProtectedRoute path="/user-roles" component={UserRoles} />
+      <ProtectedRoute path="/" component={() => <Dashboard />} />
+      <ProtectedRoute path="/schools" component={() => <Schools />} />
+      <ProtectedRoute path="/users" component={() => <Users />} />
+      <ProtectedRoute path="/user-roles" component={() => <UserRoles />} />
       {/* Добавляем новый маршрут */}
-      <ProtectedRoute path="/subjects-management" component={SubjectsManagementPage} />
-      <ProtectedRoute path="/schedule" component={SchedulePage} />
+      <ProtectedRoute path="/subjects-management" component={() => <SubjectsManagementPage />} />
+      <ProtectedRoute path="/schedule" component={() => <SchedulePage />} />
       <ProtectedRoute path="/schedule-class/:classId" component={ClassSchedulePage} />
       <ProtectedRoute path="/schedule-class/:classId/time-slots" component={ClassTimeSlotsPage} />
-      <ProtectedRoute path="/schedule-overall" component={OverallSchedulePage} />
+      <ProtectedRoute path="/schedule-overall" component={() => <OverallSchedulePage />} />
       <ProtectedRoute path="/student-schedule/:studentId" component={StudentSchedulePage} />
       <ProtectedRoute path="/class-grade-details/:classId/:subjectId/:subgroupId?" component={ClassGradeDetailsPage} />
-      <ProtectedRoute path="/grades" component={Grades} />
-      <ProtectedRoute path="/grading-systems" component={GradingSystems} />
-      <ProtectedRoute path="/homework" component={Homework} />
-      <ProtectedRoute path="/messages" component={Messages} />
-      <ProtectedRoute path="/documents" component={Documents} />
-      <ProtectedRoute path="/analytics" component={Analytics} />
-      <ProtectedRoute path="/settings" component={Settings} />
-      <ProtectedRoute path="/support" component={Support} />
-      <ProtectedRoute path="/notifications" component={Notifications} />
-      <ProtectedRoute path="/system-logs" component={SystemLogs} />
-      <ProtectedRoute path="/student-class-assignments" component={StudentClassAssignments} />
-      <ProtectedRoute path="/parent-student-connections" component={ParentStudentConnections} />
-      <ProtectedRoute path="/class-teacher-dashboard" component={ClassTeacherDashboard} />
-      <ProtectedRoute path="/class-teacher-grades" component={ClassTeacherGradesPage} />
-      <ProtectedRoute path="/teacher-classes" component={TeacherClasses} />
-      <ProtectedRoute path="/subgroups" component={Subgroups} />
+      <ProtectedRoute path="/grades" component={() => <Grades />} />
+      <ProtectedRoute path="/grading-systems" component={() => <GradingSystems />} />
+      <ProtectedRoute path="/homework" component={() => <Homework />} />
+      <ProtectedRoute path="/messages" component={() => <Messages />} />
+      <ProtectedRoute path="/documents" component={() => <Documents />} />
+      <ProtectedRoute path="/analytics" component={() => <Analytics />} />
+      <ProtectedRoute path="/settings" component={() => <Settings />} />
+      <ProtectedRoute path="/support" component={() => <Support />} />
+      <ProtectedRoute path="/notifications" component={() => <Notifications />} />
+      <ProtectedRoute path="/system-logs" component={() => <SystemLogs />} />
+      <ProtectedRoute path="/student-class-assignments" component={() => <StudentClassAssignments />} />
+      <ProtectedRoute path="/parent-student-connections" component={() => <ParentStudentConnections />} />
+      <ProtectedRoute path="/class-teacher-dashboard" component={() => <ClassTeacherDashboard />} />
+      <ProtectedRoute path="/class-teacher-grades" component={() => <ClassTeacherGradesPage />} />
+      <ProtectedRoute path="/teacher-classes" component={() => <TeacherClasses />} />
+      <ProtectedRoute path="/subgroups" component={() => <Subgroups />} />
       <Route component={NotFound} />
     </Switch>
   );

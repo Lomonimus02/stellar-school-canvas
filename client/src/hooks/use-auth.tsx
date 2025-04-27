@@ -1,3 +1,4 @@
+
 import { createContext, ReactNode, useContext } from "react";
 import {
   useQuery,
@@ -10,11 +11,11 @@ import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 // Расширяем тип User для поддержки activeRole
-type ExtendedUser = User & {
+interface ExtendedUser extends User {
   // Используем undefined вместо null для activeRole, чтобы избежать проблем с типами
   activeRole?: UserRoleEnum; 
   schoolId?: number | null;
-};
+}
 
 type AuthContextType = {
   user: ExtendedUser | null;
@@ -44,12 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retryDelay: 1000, // Задержка между повторами 1 секунда
   });
 
-  const loginMutation = useMutation({
+  const loginMutation = useMutation<ExtendedUser, Error, LoginData>({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("/api/login", "POST", credentials);
-      return await res.json();
+      const userData = await res.json();
+      // Преобразуем null в undefined для activeRole
+      const extendedUser: ExtendedUser = {
+        ...userData,
+        activeRole: userData.activeRole || undefined
+      };
+      return extendedUser;
     },
-    onSuccess: (user: User) => {
+    onSuccess: (user: ExtendedUser) => {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Вход выполнен успешно",
@@ -65,12 +72,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  const registerMutation = useMutation({
+  const registerMutation = useMutation<ExtendedUser, Error, InsertUser>({
     mutationFn: async (userData: InsertUser) => {
       const res = await apiRequest("/api/register", "POST", userData);
-      return await res.json();
+      const user = await res.json();
+      // Преобразуем null в undefined для activeRole
+      const extendedUser: ExtendedUser = {
+        ...user,
+        activeRole: user.activeRole || undefined
+      };
+      return extendedUser;
     },
-    onSuccess: (user: User) => {
+    onSuccess: (user: ExtendedUser) => {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Регистрация прошла успешно",
@@ -106,10 +119,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  // Преобразование типа User в ExtendedUser при получении данных
+  const extendedUser = user ? {
+    ...user,
+    activeRole: user.activeRole !== null ? user.activeRole : undefined
+  } as ExtendedUser : null;
+
   return (
     <AuthContext.Provider
       value={{
-        user: user ?? null,
+        user: extendedUser,
         isLoading,
         error,
         loginMutation,
