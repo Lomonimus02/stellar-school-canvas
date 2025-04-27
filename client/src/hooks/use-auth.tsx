@@ -1,4 +1,3 @@
-
 import { createContext, ReactNode, useContext } from "react";
 import {
   useQuery,
@@ -6,16 +5,13 @@ import {
   UseMutationResult,
   QueryObserverResult,
 } from "@tanstack/react-query";
-import { insertUserSchema, User, InsertUser, UserRoleEnum } from "@shared/schema";
+import { User, InsertUser, UserRoleEnum } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-// Расширяем тип User для поддержки activeRole
-interface ExtendedUser extends User {
-  // Используем undefined вместо null для activeRole, чтобы избежать проблем с типами
-  activeRole?: UserRoleEnum; 
-  schoolId?: number | null;
-}
+type ExtendedUser = User & {
+  activeRole: UserRoleEnum | undefined;
+};
 
 type AuthContextType = {
   user: ExtendedUser | null;
@@ -30,6 +26,7 @@ type AuthContextType = {
 type LoginData = Pick<InsertUser, "username" | "password">;
 
 export const AuthContext = createContext<AuthContextType | null>(null);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const {
@@ -40,16 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<User | undefined, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
-    refetchInterval: 30000, // Проверяем актуальность данных пользователя каждые 30 секунд
-    retry: 3, // Повторяем запрос 3 раза в случае неудачи
-    retryDelay: 1000, // Задержка между повторами 1 секунда
+    refetchInterval: 30000,
+    retry: 3,
+    retryDelay: 1000,
   });
 
   const loginMutation = useMutation<ExtendedUser, Error, LoginData>({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("/api/login", "POST", credentials);
       const userData = await res.json();
-      // Преобразуем null в undefined для activeRole
       const extendedUser: ExtendedUser = {
         ...userData,
         activeRole: userData.activeRole || undefined
@@ -76,7 +72,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: async (userData: InsertUser) => {
       const res = await apiRequest("/api/register", "POST", userData);
       const user = await res.json();
-      // Преобразуем null в undefined для activeRole
       const extendedUser: ExtendedUser = {
         ...user,
         activeRole: user.activeRole || undefined
@@ -119,10 +114,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  // Преобразование типа User в ExtendedUser при получении данных
   const extendedUser = user ? {
     ...user,
-    activeRole: user.activeRole !== null ? user.activeRole : undefined
+    activeRole: user.activeRole || undefined
   } as ExtendedUser : null;
 
   return (
