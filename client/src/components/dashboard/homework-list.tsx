@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 // This is a placeholder file to fix type errors
 const HomeworkList: React.FC = () => {
   // Fix the Badge variant type issue by using only valid variants
-  const getStatusVariant = (status: string) => {
+  const getStatusVariant = (status: string): "default" | "destructive" | "outline" | "secondary" => {
     switch (status) {
       case 'completed':
         return 'default';

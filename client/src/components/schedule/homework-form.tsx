@@ -76,7 +76,8 @@ export const HomeworkForm: React.FC<HomeworkFormProps> = ({ schedule, existingHo
         classId: currentHomework.classId,
         subjectId: currentHomework.subjectId,
         teacherId: currentHomework.teacherId,
-        scheduleId: currentHomework.scheduleId
+        // Convert null to undefined for scheduleId
+        scheduleId: currentHomework.scheduleId ?? undefined
       });
     }
   }, [currentHomework, form]);
